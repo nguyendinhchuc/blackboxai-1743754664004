@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng - PianoHaven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-music text-2xl text-blue-600"></i>
+                        <span class="ml-2 text-xl font-bold text-gray-800">PianoHaven</span>
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <div class="hidden md:flex space-x-8">
+                        <a href="/" class="text-gray-600 hover:text-blue-600 px-3 py-2 font-medium">Trang Chủ</a>
+                        <a href="/products.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 font-medium">Đàn Piano</a>
+                        <a href="/cart.html" class="relative text-blue-600 px-3 py-2 font-medium">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Section -->
+    <main class="pt-24 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Giỏ Hàng Của Bạn</h1>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Cart Items -->
+                <div class="lg:col-span-2">
+                    <div id="cart-items" class="space-y-4">
+                        <!-- Cart items will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Tổng Quan Đơn Hàng</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Tạm tính</span>
+                                <span id="subtotal" class="text-gray-900 font-medium">0₫</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Giao Hàng Tận Nơi</span>
+                                <span class="text-gray-900 font-medium">Miễn Phí</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Lắp Đặt Chuyên Nghiệp</span>
+                                <span class="text-gray-900 font-medium">Miễn Phí</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Chỉnh Âm Lần Đầu</span>
+                                <span class="text-gray-900 font-medium">Miễn Phí</span>
+                            </div>
+                            <div class="border-t pt-3 mt-3">
+                                <div class="flex justify-between">
+                                    <span class="text-lg font-semibold">Tổng Cộng</span>
+                                    <span id="total" class="text-lg font-semibold text-blue-600">0₫</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 space-y-4">
+                            <button 
+                                onclick="scheduleConsultation()"
+                                class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300"
+                            >
+                                Đặt Lịch Tư Vấn Miễn Phí
+                            </button>
+                            <button 
+                                onclick="proceedToCheckout()"
+                                class="w-full bg-gray-800 text-white px-4 py-3 rounded-lg hover:bg-gray-900 transition-colors duration-300"
+                            >
+                                Tiến Hành Thanh Toán
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Financing Options -->
+                    <div class="mt-6 bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Các Phương Thức Thanh Toán</h2>
+                        <p class="text-gray-600 mb-4">
+                            Biến ước mơ sở hữu đàn piano thành hiện thực với các phương thức thanh toán linh hoạt và tùy chọn cho thuê của chúng tôi.
+                        </p>
+                        <ul class="text-sm text-gray-600 mb-4 space-y-2">
+                            <li>• Lãi suất 0% trong 12 tháng</li>
+                            <li>• Kế hoạch trả góp lên đến 84 tháng</li>
+                            <li>• Có tùy chọn thuê-để-sở-hữu</li>
+                        </ul>
+                        <button 
+                            onclick="exploreFinancing()"
+                            class="w-full bg-gray-100 text-gray-800 px-4 py-3 rounded-lg hover:bg-gray-200 transition-colors duration-300"
+                        >
+                            Tìm Hiểu Thêm Về Thanh Toán
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty Cart Message -->
+            <div id="empty-cart" class="hidden text-center py-12">
+                <i class="fas fa-music text-6xl text-gray-300 mb-4"></i>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-2">Giỏ hàng của bạn đang trống</h2>
+                <p class="text-gray-600 mb-6">Khám phá bộ sưu tập đàn piano cao cấp từ các nhà sản xuất nổi tiếng thế giới.</p>
+                <a href="/products.html" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                    Xem Các Đàn Piano
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Về PianoHaven</h3>
+                    <p class="text-gray-400">Điểm đến tin cậy cho những cây đàn piano cao cấp. Chúng tôi cung cấp bộ sưu tập đàn piano grand, đàn piano đứng và đàn piano điện từ các nhà sản xuất hàng đầu thế giới.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Liên Kết Nhanh</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/about.html" class="text-gray-400 hover:text-white">Về Chúng Tôi</a></li>
+                        <li><a href="/contact.html" class="text-gray-400 hover:text-white">Liên Hệ</a></li>
+                        <li><a href="/shipping.html" class="text-gray-400 hover:text-white">Thông Tin Giao Hàng</a></li>
+                        <li><a href="/warranty.html" class="text-gray-400 hover:text-white">Bảo Hành</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Kết Nối Với Chúng Tôi</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+                <p>&copy; 2024 PianoHaven. Đã đăng ký bản quyền.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/utils/api.js"></script>
+    <script src="js/cart.js"></script>
+</body>
+</html>

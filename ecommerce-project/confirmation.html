@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Nhận Đơn Hàng - PianoHaven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-music text-2xl text-blue-600"></i>
+                        <span class="ml-2 text-xl font-bold text-gray-800">PianoHaven</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Confirmation Content -->
+    <main class="pt-24 pb-12">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                <div class="mb-6">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-check text-3xl text-green-500"></i>
+                    </div>
+                </div>
+                
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">Cảm Ơn Bạn Đã Mua Hàng!</h1>
+                <p class="text-gray-600 mb-8">
+                    Chúng tôi rất vui mừng chào đón bạn đến với gia đình PianoHaven. Đội ngũ của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất để xác nhận chi tiết giao hàng.
+                </p>
+
+                <div class="border-t border-gray-200 pt-8 mb-8">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Chi Tiết Đơn Hàng</h2>
+                    <div class="text-left space-y-4">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Mã Đơn Hàng:</span>
+                            <span class="text-gray-900 font-medium" id="order-number"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Ngày Đặt Hàng:</span>
+                            <span class="text-gray-900 font-medium" id="order-date"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Ngày Giao Hàng Dự Kiến:</span>
+                            <span class="text-gray-900 font-medium" id="delivery-date"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-4">Các Bước Tiếp Theo</h3>
+                    <div class="space-y-4 text-left">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-blue-600 font-semibold">1</span>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-blue-900 font-medium">Liên Hệ Trước Giao Hàng</h4>
+                                <p class="text-blue-800 text-sm">Đội ngũ giao hàng sẽ liên hệ với bạn trong vòng 24 giờ để xác nhận chi tiết giao hàng và khảo sát không gian.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-blue-600 font-semibold">2</span>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-blue-900 font-medium">Giao Hàng Cao Cấp</h4>
+                                <p class="text-blue-800 text-sm">Đội ngũ chuyên nghiệp của chúng tôi sẽ cẩn thận giao và đặt đàn piano tại vị trí bạn chọn.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-blue-600 font-semibold">3</span>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-blue-900 font-medium">Lắp Đặt & Chỉnh Âm</h4>
+                                <p class="text-blue-800 text-sm">Sau khi giao hàng, chúng tôi sẽ lên lịch dịch vụ chỉnh âm chuyên nghiệp miễn phí cho bạn.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-200 pt-8 mb-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Cần Hỗ Trợ?</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                        <div class="p-4 border rounded-lg">
+                            <h4 class="font-medium mb-2">Hỗ Trợ Khách Hàng</h4>
+                            <p class="text-gray-600 text-sm">1-800-PIANO-HAVEN</p>
+                            <p class="text-gray-600 text-sm">support@pianohaven.com</p>
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                            <h4 class="font-medium mb-2">Hỗ Trợ Giao Hàng</h4>
+                            <p class="text-gray-600 text-sm">1-800-PIANO-DEL</p>
+                            <p class="text-gray-600 text-sm">delivery@pianohaven.com</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <a href="/"
+                        class="inline-block w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                        Quay Lại Trang Chủ
+                    </a>
+                    <a href="/orders.html"
+                        class="inline-block w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors duration-300">
+                        Xem Chi Tiết Đơn Hàng
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function generateOrderNumber() {
+            return 'PH-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+
+        function formatDate(date) {
+            return new Intl.DateTimeFormat('vi-VN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+            }).format(date);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderDate = new Date();
+            const deliveryDate = new Date();
+            deliveryDate.setDate(deliveryDate.getDate() + 7); // Giao hàng sau 7 ngày
+
+            document.getElementById('order-number').textContent = generateOrderNumber();
+            document.getElementById('order-date').textContent = formatDate(orderDate);
+            document.getElementById('delivery-date').textContent = formatDate(deliveryDate);
+
+            // Xóa giỏ hàng sau khi đặt hàng thành công
+            localStorage.removeItem('cart');
+        });
+    </script>
+</body>
+</html>

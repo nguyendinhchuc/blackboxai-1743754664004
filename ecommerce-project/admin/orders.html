@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Đơn Hàng</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <!-- Include Sidebar -->
+            <script>
+                fetch('sidebar.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('sidebar').innerHTML = data;
+                    });
+            </script>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-bold">Quản Lý Đơn Hàng</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <select id="orderFilter" class="border rounded-md px-3 py-1">
+                            <option value="all">Tất Cả Đơn Hàng</option>
+                            <option value="pending">Chờ Xử Lý</option>
+                            <option value="processing">Đang Xử Lý</option>
+                            <option value="completed">Hoàn Thành</option>
+                            <option value="cancelled">Đã Hủy</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Table -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã Đơn</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khách Hàng</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="orderTableBody">
+                            <!-- Orders will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Chi Tiết Đơn Hàng</h3>
+                <button id="closeOrderModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="orderDetailsContent">
+                <!-- Order details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load orders
+            const orders = await loadOrders();
+            renderOrders(orders);
+
+            // Filter event listener
+            document.getElementById('orderFilter').addEventListener('change', async (e) => {
+                const status = e.target.value;
+                const orders = await loadOrders(status === 'all' ? null : status);
+                renderOrders(orders);
+            });
+
+            // Modal close button
+            document.getElementById('closeOrderModalBtn').addEventListener('click', () => {
+                document.getElementById('orderModal').classList.add('hidden');
+            });
+        });
+
+        function renderOrders(orders) {
+            const tableBody = document.getElementById('orderTableBody');
+            tableBody.innerHTML = orders.map(order => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">#${order.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${order.customerName}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${new Date(order.date).toLocaleDateString('vi-VN')}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${order.total.toLocaleString('vi-VN')}₫</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                            order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                            'bg-yellow-100 text-yellow-800'
+                        }">
+                            ${translateStatus(order.status)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <button class="text-indigo-600 hover:text-indigo-900 mr-3" onclick="viewOrderDetails(${order.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <select class="border rounded px-2 py-1 text-sm" onchange="updateOrderStatus(${order.id}, this.value)">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Chờ Xử Lý</option>
+                            <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Đang Xử Lý</option>
+                            <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Hoàn Thành</option>
+                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Đã Hủy</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function translateStatus(status) {
+            const statusMap = {
+                'pending': 'Chờ Xử Lý',
+                'processing': 'Đang Xử Lý',
+                'completed': 'Hoàn Thành',
+                'cancelled': 'Đã Hủy'
+            };
+            return statusMap[status] || status;
+        }
+
+        async function viewOrderDetails(orderId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/orders/${orderId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                const order = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('orderDetailsContent').innerHTML = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-bold mb-2">Thông Tin Khách Hàng</h4>
+                                <p>${order.customerName}</p>
+                                <p>${order.customerEmail}</p>
+                                <p>${order.shippingAddress}</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">Tổng Quan Đơn Hàng</h4>
+                                <p>Ngày Đặt: ${new Date(order.date).toLocaleString('vi-VN')}</p>
+                                <p>Trạng Thái: ${translateStatus(order.status)}</p>
+                                <p>Phương Thức Thanh Toán: ${order.paymentMethod}</p>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <h4 class="font-bold mb-2">Chi Tiết Sản Phẩm</h4>
+                            <div class="space-y-4">
+                                ${order.items.map(item => `
+                                    <div class="flex items-center border-b pb-2">
+                                        <img src="${item.image}" alt="${item.name}" class="w-12 h-12 object-cover rounded mr-3">
+                                        <div class="flex-1">
+                                            <p>${item.name}</p>
+                                            <p class="text-sm text-gray-500">${item.quantity} × ${item.price.toLocaleString('vi-VN')}₫</p>
+                                        </div>
+                                        <p>${(item.price * item.quantity).toLocaleString('vi-VN')}₫</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <div class="flex justify-between font-bold">
+                                <span>Tổng Cộng:</span>
+                                <span>${order.total.toLocaleString('vi-VN')}₫</span>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('orderModal').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải chi tiết đơn hàng:', error);
+            }
+        }
+    </script>
+</body>
+</html>

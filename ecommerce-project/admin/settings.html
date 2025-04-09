@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài Đặt Quản Trị</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <!-- Include Sidebar -->
+            <script>
+                fetch('sidebar.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('sidebar').innerHTML = data;
+                    });
+            </script>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-bold">Cài Đặt</h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="space-y-8">
+                    <!-- Store Settings -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">Cài Đặt Cửa Hàng</h3>
+                        <form id="storeSettingsForm" class="space-y-4">
+                            <div>
+                                <label for="storeName" class="block text-sm font-medium text-gray-700">Tên Cửa Hàng</label>
+                                <input type="text" id="storeName" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="storeEmail" class="block text-sm font-medium text-gray-700">Email Liên Hệ</label>
+                                <input type="email" id="storeEmail" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="storeCurrency" class="block text-sm font-medium text-gray-700">Tiền Tệ</label>
+                                <select id="storeCurrency" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="VND">Việt Nam Đồng (₫)</option>
+                                    <option value="USD">Đô la Mỹ ($)</option>
+                                    <option value="EUR">Euro (€)</option>
+                                    <option value="GBP">Bảng Anh (£)</option>
+                                </select>
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                                    Lưu Cài Đặt Cửa Hàng
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Payment Settings -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">Cài Đặt Thanh Toán</h3>
+                        <form id="paymentSettingsForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Phương Thức Thanh Toán</label>
+                                <div class="mt-2 space-y-2">
+                                    <div class="flex items-center">
+                                        <input id="creditCardEnabled" name="creditCardEnabled" type="checkbox" 
+                                            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                        <label for="creditCardEnabled" class="ml-2 block text-sm text-gray-700">Thẻ Tín Dụng</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="paypalEnabled" name="paypalEnabled" type="checkbox" 
+                                            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                        <label for="paypalEnabled" class="ml-2 block text-sm text-gray-700">PayPal</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="stripeKey" class="block text-sm font-medium text-gray-700">Khóa Công Khai Stripe</label>
+                                <input type="text" id="stripeKey"
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                                    Lưu Cài Đặt Thanh Toán
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Admin Account -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">Tài Khoản Quản Trị</h3>
+                        <form id="adminAccountForm" class="space-y-4">
+                            <div>
+                                <label for="currentPassword" class="block text-sm font-medium text-gray-700">Mật Khẩu Hiện Tại</label>
+                                <input type="password" id="currentPassword" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="newPassword" class="block text-sm font-medium text-gray-700">Mật Khẩu Mới</label>
+                                <input type="password" id="newPassword" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Xác Nhận Mật Khẩu Mới</label>
+                                <input type="password" id="confirmPassword" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                                    Đổi Mật Khẩu
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load settings
+            const settings = await loadSettings();
+            if (settings) {
+                document.getElementById('storeName').value = settings.storeName || '';
+                document.getElementById('storeEmail').value = settings.storeEmail || '';
+                document.getElementById('storeCurrency').value = settings.currency || 'VND';
+                document.getElementById('creditCardEnabled').checked = settings.paymentMethods?.creditCard || false;
+                document.getElementById('paypalEnabled').checked = settings.paymentMethods?.paypal || false;
+                document.getElementById('stripeKey').value = settings.stripeKey || '';
+            }
+
+            // Form submissions
+            document.getElementById('storeSettingsForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await saveSettings({
+                    storeName: document.getElementById('storeName').value,
+                    storeEmail: document.getElementById('storeEmail').value,
+                    currency: document.getElementById('storeCurrency').value
+                });
+                showToast('Đã lưu cài đặt cửa hàng thành công', 'success');
+            });
+
+            document.getElementById('paymentSettingsForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await saveSettings({
+                    paymentMethods: {
+                        creditCard: document.getElementById('creditCardEnabled').checked,
+                        paypal: document.getElementById('paypalEnabled').checked
+                    },
+                    stripeKey: document.getElementById('stripeKey').value
+                });
+                showToast('Đã lưu cài đặt thanh toán thành công', 'success');
+            });
+
+            document.getElementById('adminAccountForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (newPassword !== confirmPassword) {
+                    showToast('Mật khẩu mới không khớp', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/change-password`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        },
+                        body: JSON.stringify({ currentPassword, newPassword })
+                    });
+
+                    if (response.ok) {
+                        showToast('Đã đổi mật khẩu thành công', 'success');
+                        document.getElementById('adminAccountForm').reset();
+                    } else {
+                        const error = await response.json();
+                        showToast(error.message || 'Không thể đổi mật khẩu', 'error');
+                    }
+                } catch (error) {
+                    showToast('Lỗi khi đổi mật khẩu', 'error');
+                    console.error('Lỗi đổi mật khẩu:', error);
+                }
+            });
+        });
+
+        async function loadSettings() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/settings`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Lỗi khi tải cài đặt:', error);
+                return null;
+            }
+        }
+
+        async function saveSettings(settings) {
+            try {
+                await fetch(`${API_BASE_URL}/settings`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify(settings)
+                });
+            } catch (error) {
+                console.error('Lỗi khi lưu cài đặt:', error);
+            }
+        }
+    </script>
+</body>
+</html>

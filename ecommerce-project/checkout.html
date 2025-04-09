@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán - PianoHaven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-music text-2xl text-blue-600"></i>
+                        <span class="ml-2 text-xl font-bold text-gray-800">PianoHaven</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Checkout Form -->
+    <main class="pt-24 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-8">
+                <a href="/cart.html" class="hover:text-blue-600">Giỏ Hàng</a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-blue-600">Thanh Toán</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Customer Information -->
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Thông Tin Khách Hàng</h2>
+                    <form id="checkout-form" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Họ</label>
+                                <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tên</label>
+                                <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Số Điện Thoại</label>
+                            <input type="tel" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-8">Địa Chỉ Giao Hàng</h2>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Địa Chỉ</label>
+                            <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Thành Phố</label>
+                                <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Mã Bưu Điện</label>
+                                <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 p-4 rounded-lg mt-4">
+                            <h3 class="font-semibold text-blue-900 mb-2">Thông Tin Giao Hàng & Lắp Đặt</h3>
+                            <div class="space-y-2 text-sm text-blue-800">
+                                <p><i class="fas fa-info-circle mr-2"></i>Dịch vụ giao hàng cao cấp của chúng tôi bao gồm:</p>
+                                <ul class="list-disc pl-8 space-y-1">
+                                    <li>Đội ngũ vận chuyển đàn piano chuyên nghiệp</li>
+                                    <li>Đặt đàn cẩn thận tại vị trí bạn chọn</li>
+                                    <li>Lắp đặt và chỉnh âm ban đầu</li>
+                                    <li>Thu dọn toàn bộ vật liệu đóng gói</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-8">Phương Thức Thanh Toán</h2>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-3 p-4 border rounded-lg">
+                                <input type="radio" name="payment" id="payment-full" checked>
+                                <label for="payment-full" class="flex-1">
+                                    <span class="font-medium">Thanh Toán Toàn Bộ</span>
+                                    <p class="text-sm text-gray-500">Thanh toán một lần toàn bộ số tiền</p>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-3 p-4 border rounded-lg">
+                                <input type="radio" name="payment" id="payment-finance">
+                                <label for="payment-finance" class="flex-1">
+                                    <span class="font-medium">Trả Góp</span>
+                                    <p class="text-sm text-gray-500">Thanh toán hàng tháng với lãi suất 0% trong 12 tháng</p>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="payment-details" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Số Thẻ</label>
+                                <input type="text" required placeholder="**** **** **** ****" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Ngày Hết Hạn</label>
+                                    <input type="text" required placeholder="MM/YY" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                                    <input type="text" required placeholder="***" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Order Summary -->
+                <div>
+                    <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Tổng Quan Đơn Hàng</h2>
+                        <div id="order-items" class="space-y-4 mb-4">
+                            <!-- Order items will be dynamically inserted here -->
+                        </div>
+                        <div class="border-t pt-4 space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Tạm tính</span>
+                                <span id="subtotal" class="text-gray-900 font-medium">0₫</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Giao Hàng Cao Cấp</span>
+                                <span class="text-gray-900 font-medium">Miễn Phí</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Lắp Đặt Chuyên Nghiệp</span>
+                                <span class="text-gray-900 font-medium">Miễn Phí</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Chỉnh Âm Lần Đầu</span>
+                                <span class="text-gray-900 font-medium">Miễn Phí</span>
+                            </div>
+                            <div class="border-t pt-3 mt-3">
+                                <div class="flex justify-between">
+                                    <span class="text-lg font-semibold">Tổng Cộng</span>
+                                    <span id="total" class="text-lg font-semibold text-blue-600">0₫</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button 
+                            onclick="placeOrder()"
+                            class="w-full mt-6 bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300"
+                        >
+                            Hoàn Tất Đặt Hàng
+                        </button>
+                        <p class="mt-4 text-sm text-gray-500 text-center">
+                            Cần hỗ trợ? <a href="/contact.html" class="text-blue-600 hover:text-blue-700">Liên hệ chuyên gia piano của chúng tôi</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils/api.js"></script>
+    <script src="js/checkout.js"></script>
+</body>
+</html>

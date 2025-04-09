@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đàn Piano Của Chúng Tôi - PianoHaven</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-music text-2xl text-blue-600"></i>
+                        <span class="ml-2 text-xl font-bold text-gray-800">PianoHaven</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center">
+                    <div class="hidden md:flex space-x-8">
+                        <a href="index.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 font-medium">Trang Chủ</a>
+                        <a href="products.html" class="text-blue-600 px-3 py-2 font-medium">Sản Phẩm</a>
+                        <a href="cart.html" class="relative text-gray-600 hover:text-blue-600 px-3 py-2 font-medium">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Products Section -->
+    <main class="pt-24 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">Bộ Sưu Tập Đàn Piano Cao Cấp</h1>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <input type="text" 
+                            placeholder="Tìm kiếm đàn piano..." 
+                            class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <select class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Tất Cả Loại</option>
+                        <option value="grand">Đàn Piano Grand</option>
+                        <option value="upright">Đàn Piano Đứng</option>
+                        <option value="digital">Đàn Piano Điện</option>
+                    </select>
+                    <select class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Sắp Xếp Theo</option>
+                        <option value="price-asc">Giá: Thấp đến Cao</option>
+                        <option value="price-desc">Giá: Cao đến Thấp</option>
+                        <option value="name-asc">Tên: A đến Z</option>
+                        <option value="name-desc">Tên: Z đến A</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Products will be dynamically inserted here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Về PianoHaven</h3>
+                    <p class="text-gray-400">Điểm đến tin cậy cho những cây đàn piano cao cấp. Chúng tôi cung cấp bộ sưu tập đàn piano grand, đàn piano đứng và đàn piano điện từ các nhà sản xuất hàng đầu thế giới.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Liên Kết Nhanh</h3>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-400 hover:text-white">Về Chúng Tôi</a></li>
+                        <li><a href="contact.html" class="text-gray-400 hover:text-white">Liên Hệ</a></li>
+                        <li><a href="shipping.html" class="text-gray-400 hover:text-white">Thông Tin Vận Chuyển</a></li>
+                        <li><a href="returns.html" class="text-gray-400 hover:text-white">Chính Sách Đổi Trả</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Kết Nối Với Chúng Tôi</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+                <p>&copy; 2024 PianoHaven. Đã đăng ký bản quyền.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="js/product.js"></script>
+</body>
+</html>

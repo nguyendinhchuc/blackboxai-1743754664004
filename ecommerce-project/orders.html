@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn Hàng Của Tôi - Cửa Hàng Trực Tuyến</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <a href="index.html" class="flex items-center py-4 px-2">
+                        <span class="font-semibold text-gray-500 text-lg">Trang Chủ</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-3">
+                    <!-- Search will be injected here by search.js -->
+                    <a href="products.html" class="py-2 px-2 text-gray-500 hover:text-gray-900">Sản Phẩm</a>
+                    <a href="cart.html" class="py-2 px-2 text-gray-500 hover:text-gray-900 relative">
+                        <i class="fas fa-shopping-cart"></i> Giỏ Hàng
+                        <span class="cart-count hidden absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </a>
+                    <div class="relative" id="profileDropdown">
+                        <button class="flex items-center space-x-1 py-2 px-2 text-gray-500 hover:text-gray-900">
+                            <i class="fas fa-user"></i>
+                            <span id="userName">Tài Khoản</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden z-50" id="profileMenu">
+                            <div class="authenticated-only hidden">
+                                <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-user-circle mr-2"></i> Thông Tin Tài Khoản
+                                </a>
+                                <a href="orders.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-shopping-bag mr-2"></i> Đơn Hàng
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">Đơn Hàng Của Tôi</h1>
+                <div class="flex items-center space-x-4">
+                    <select id="filterStatus" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="">Tất Cả Trạng Thái</option>
+                        <option value="pending">Chờ Xử Lý</option>
+                        <option value="processing">Đang Xử Lý</option>
+                        <option value="shipped">Đang Giao Hàng</option>
+                        <option value="completed">Hoàn Thành</option>
+                        <option value="cancelled">Đã Hủy</option>
+                    </select>
+                    <a href="products.html" class="text-indigo-600 hover:text-indigo-800">
+                        <i class="fas fa-arrow-left mr-2"></i>Tiếp Tục Mua Sắm
+                    </a>
+                </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="hidden">
+                <div class="flex justify-center items-center py-12">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                </div>
+            </div>
+
+            <!-- Orders List -->
+            <div id="ordersList" class="space-y-6">
+                <!-- Orders will be loaded dynamically -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-12">
+                <i class="fas fa-shopping-bag text-gray-300 text-5xl mb-4"></i>
+                <p class="text-gray-500 mb-4">Bạn chưa có đơn hàng nào</p>
+                <a href="products.html" class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700">
+                    Mua Sắm Ngay
+                </a>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="hidden mt-6 flex justify-center space-x-2">
+                <button id="prevPage" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+                    <i class="fas fa-chevron-left mr-2"></i>Trước
+                </button>
+                <div id="pageNumbers" class="flex space-x-2">
+                    <!-- Page numbers will be generated dynamically -->
+                </div>
+                <button id="nextPage" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+                    Sau<i class="fas fa-chevron-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
+    <script>
+        // State management
+        let currentPage = 1;
+        let ordersPerPage = 5;
+        let currentFilter = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthentication();
+            setupProfileDropdown();
+            setupEventListeners();
+            loadOrders();
+        });
+
+        // Check if user is authenticated
+        function checkAuthentication() {
+            const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = 'dangnhap.html';
+                return;
+            }
+        }
+
+        // Setup profile dropdown
+        function setupProfileDropdown() {
+            const profileButton = document.getElementById('profileDropdown')?.querySelector('button');
+            const profileMenu = document.getElementById('profileMenu');
+            const authenticatedContent = document.querySelector('.authenticated-only');
+            const unauthenticatedContent = document.querySelector('.unauthenticated-only');
+            
+            profileButton?.addEventListener('click', () => {
+                profileMenu?.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!profileButton?.contains(e.target) && !profileMenu?.contains(e.target)) {
+                    profileMenu?.classList.add('hidden');
+                }
+            });
+
+            const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+            if (token) {
+                authenticatedContent?.classList.remove('hidden');
+                unauthenticatedContent?.classList.add('hidden');
+            } else {
+                authenticatedContent?.classList.add('hidden');
+                unauthenticatedContent?.classList.remove('hidden');
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('filterStatus')?.addEventListener('change', (e) => {
+                currentFilter = e.target.value;
+                currentPage = 1;
+                loadOrders();
+            });
+
+            document.getElementById('prevPage')?.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadOrders();
+                }
+            });
+
+            document.getElementById('nextPage')?.addEventListener('click', () => {
+                currentPage++;
+                loadOrders();
+            });
+        }
+
+        // Load orders
+        async function loadOrders() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const ordersList = document.getElementById('ordersList');
+            const emptyState = document.getElementById('emptyState');
+            const pagination = document.getElementById('pagination');
+
+            try {
+                loadingIndicator?.classList.remove('hidden');
+                ordersList?.classList.add('hidden');
+                emptyState?.classList.add('hidden');
+                pagination?.classList.add('hidden');
+
+                const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+                const queryParams = new URLSearchParams({
+                    page: currentPage,
+                    limit: ordersPerPage,
+                    status: currentFilter
+                });
+
+                const response = await fetch(`${window.API_BASE_URL}/orders?${queryParams}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.orders.length === 0) {
+                        emptyState?.classList.remove('hidden');
+                        return;
+                    }
+
+                    ordersList.innerHTML = data.orders.map(order => `
+                        <div class="bg-white border rounded-lg overflow-hidden">
+                            <div class="px-6 py-4 border-b bg-gray-50">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-sm text-gray-600">Đơn hàng #${order.id}</p>
+                                        <p class="text-sm text-gray-600">${new Date(order.date).toLocaleDateString('vi-VN')}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-lg font-semibold">${formatPrice(order.total)}₫</p>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                            ${order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                              order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                                              order.status === 'shipped' ? 'bg-yellow-100 text-yellow-800' :
+                                              order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                              'bg-gray-100 text-gray-800'}">
+                                            ${translateOrderStatus(order.status)}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-6 py-4">
+                                ${order.items.map(item => `
+                                    <div class="flex items-center py-2">
+                                        <img src="${item.imageUrl}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                                        <div class="ml-4 flex-1">
+                                            <h4 class="text-sm font-medium">${item.name}</h4>
+                                            <p class="text-sm text-gray-500">
+                                                ${formatPrice(item.price)}₫ x ${item.quantity}
+                                            </p>
+                                        </div>
+                                        <p class="text-sm font-medium">
+                                            ${formatPrice(item.price * item.quantity)}₫
+                                        </p>
+                                    </div>
+                                `).join('')}
+                                ${order.status === 'pending' ? `
+                                    <div class="mt-4 flex justify-end">
+                                        <button onclick="cancelOrder(${order.id})" 
+                                            class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-times mr-2"></i>Hủy Đơn Hàng
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `).join('');
+
+                    ordersList?.classList.remove('hidden');
+                    updatePagination(data.totalPages);
+                } else {
+                    showToast('Không thể tải danh sách đơn hàng', 'error');
+                }
+            } catch (error) {
+                console.error('Load orders error:', error);
+                showToast('Lỗi kết nối. Vui lòng thử lại sau.', 'error');
+            } finally {
+                loadingIndicator?.classList.add('hidden');
+            }
+        }
+
+        // Update pagination
+        function updatePagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            const pageNumbers = document.getElementById('pageNumbers');
+            const prevButton = document.getElementById('prevPage');
+            const nextButton = document.getElementById('nextPage');
+
+            if (totalPages <= 1) {
+                pagination?.classList.add('hidden');
+                return;
+            }
+
+            pageNumbers.innerHTML = Array.from({ length: totalPages }, (_, i) => i + 1)
+                .map(page => `
+                    <button onclick="goToPage(${page})" 
+                        class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium 
+                        ${currentPage === page ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-50'}">
+                        ${page}
+                    </button>
+                `).join('');
+
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+            pagination?.classList.remove('hidden');
+        }
+
+        // Go to specific page
+        function goToPage(page) {
+            currentPage = page;
+            loadOrders();
+        }
+
+        // Cancel order
+        async function cancelOrder(orderId) {
+            if (!confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) {
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+                const response = await fetch(`${window.API_BASE_URL}/orders/${orderId}/cancel`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    showToast('Đã hủy đơn hàng thành công', 'success');
+                    loadOrders();
+                } else {
+                    showToast('Không thể hủy đơn hàng', 'error');
+                }
+            } catch (error) {
+                console.error('Cancel order error:', error);
+                showToast('Lỗi kết nối. Vui lòng thử lại.', 'error');
+            }
+        }
+
+        // Format price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN').format(price);
+        }
+
+        // Translate order status
+        function translateOrderStatus(status) {
+            const statusMap = {
+                'pending': 'Chờ Xử Lý',
+                'processing': 'Đang Xử Lý',
+                'shipped': 'Đang Giao Hàng',
+                'completed': 'Hoàn Thành',
+                'cancelled': 'Đã Hủy'
+            };
+            return statusMap[status] || status;
+        }
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg text-white ${
+                type === 'error' ? 'bg-red-500' : 
+                type === 'success' ? 'bg-green-500' : 'bg-blue-500'
+            }`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Sign out function
+        function signOut() {
+            localStorage.removeItem('authToken');
+            sessionStorage.removeItem('authToken');
+            window.location.href = 'dangnhap.html';
+        }
+    </script>
+</body>
+</html>

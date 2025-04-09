@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Yêu Thích - Cửa Hàng Trực Tuyến</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <a href="index.html" class="flex items-center py-4 px-2">
+                        <span class="font-semibold text-gray-500 text-lg">Trang Chủ</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-3">
+                    <!-- Search will be injected here by search.js -->
+                    <a href="products.html" class="py-2 px-2 text-gray-500 hover:text-gray-900">Sản Phẩm</a>
+                    <a href="cart.html" class="py-2 px-2 text-gray-500 hover:text-gray-900 relative">
+                        <i class="fas fa-shopping-cart"></i> Giỏ Hàng
+                        <span class="cart-count hidden absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </a>
+                    <div class="relative" id="profileDropdown">
+                        <button class="flex items-center space-x-1 py-2 px-2 text-gray-500 hover:text-gray-900">
+                            <i class="fas fa-user"></i>
+                            <span id="userName">Tài Khoản</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden z-50" id="profileMenu">
+                            <div class="authenticated-only hidden">
+                                <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-user-circle mr-2"></i> Thông Tin Tài Khoản
+                                </a>
+                                <a href="orders.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-shopping-bag mr-2"></i> Đơn Hàng
+                                </a>
+                                <a href="wishlist.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-heart mr-2"></i> Yêu Thích
+                                </a>
+                                <hr class="my-1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">Danh Sách Yêu Thích</h1>
+                <a href="products.html" class="text-indigo-600 hover:text-indigo-800">
+                    <i class="fas fa-arrow-left mr-2"></i>Tiếp Tục Mua Sắm
+                </a>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="hidden">
+                <div class="flex justify-center items-center py-12">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                </div>
+            </div>
+
+            <!-- Wishlist Grid -->
+            <div id="wishlistGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Items will be loaded dynamically -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-12">
+                <i class="fas fa-heart text-gray-300 text-5xl mb-4"></i>
+                <p class="text-gray-500 mb-4">Danh sách yêu thích của bạn đang trống</p>
+                <a href="products.html" class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700">
+                    Khám Phá Sản Phẩm
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthentication();
+            setupProfileDropdown();
+            loadWishlist();
+        });
+
+        // Check if user is authenticated
+        function checkAuthentication() {
+            const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = 'dangnhap.html';
+                return;
+            }
+        }
+
+        // Setup profile dropdown
+        function setupProfileDropdown() {
+            const profileButton = document.getElementById('profileDropdown')?.querySelector('button');
+            const profileMenu = document.getElementById('profileMenu');
+            const authenticatedContent = document.querySelector('.authenticated-only');
+            const unauthenticatedContent = document.querySelector('.unauthenticated-only');
+            
+            profileButton?.addEventListener('click', () => {
+                profileMenu?.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!profileButton?.contains(e.target) && !profileMenu?.contains(e.target)) {
+                    profileMenu?.classList.add('hidden');
+                }
+            });
+
+            const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+            if (token) {
+                authenticatedContent?.classList.remove('hidden');
+                unauthenticatedContent?.classList.add('hidden');
+            } else {
+                authenticatedContent?.classList.add('hidden');
+                unauthenticatedContent?.classList.remove('hidden');
+            }
+        }
+
+        // Load wishlist items
+        async function loadWishlist() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const wishlistGrid = document.getElementById('wishlistGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            try {
+                loadingIndicator?.classList.remove('hidden');
+                wishlistGrid?.classList.add('hidden');
+                emptyState?.classList.add('hidden');
+
+                const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+                const response = await fetch(`${window.API_BASE_URL}/wishlist`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const wishlist = await response.json();
+
+                    if (wishlist.length === 0) {
+                        emptyState?.classList.remove('hidden');
+                        return;
+                    }
+
+                    wishlistGrid.innerHTML = wishlist.map(product => `
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden group">
+                            <div class="relative">
+                                <img src="${product.imageUrl}" alt="${product.name}" 
+                                    class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                                <button onclick="removeFromWishlist(${product.id})" 
+                                    class="absolute top-2 right-2 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-red-50">
+                                    <i class="fas fa-heart text-red-500"></i>
+                                </button>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-medium text-lg mb-2">${product.name}</h3>
+                                <p class="text-gray-600 mb-4">${formatPrice(product.price)}₫</p>
+                                <button onclick="addToCart(${product.id})" 
+                                    class="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                                    Thêm Vào Giỏ
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    wishlistGrid?.classList.remove('hidden');
+                } else {
+                    showToast('Không thể tải danh sách yêu thích', 'error');
+                }
+            } catch (error) {
+                console.error('Load wishlist error:', error);
+                showToast('Lỗi kết nối. Vui lòng thử lại sau.', 'error');
+            } finally {
+                loadingIndicator?.classList.add('hidden');
+            }
+        }
+
+        // Remove from wishlist
+        async function removeFromWishlist(productId) {
+            try {
+                const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+                const response = await fetch(`${window.API_BASE_URL}/wishlist/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    showToast('Đã xóa khỏi danh sách yêu thích', 'success');
+                    loadWishlist();
+                } else {
+                    showToast('Không thể xóa sản phẩm', 'error');
+                }
+            } catch (error) {
+                console.error('Remove from wishlist error:', error);
+                showToast('Lỗi kết nối. Vui lòng thử lại.', 'error');
+            }
+        }
+
+        // Add to cart
+        async function addToCart(productId) {
+            try {
+                const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+                const response = await fetch(`${window.API_BASE_URL}/products/${productId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const product = await response.json();
+                    window.cart.addItem({
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        imageUrl: product.imageUrl
+                    });
+                    showToast('Đã thêm vào giỏ hàng', 'success');
+                } else {
+                    showToast('Không thể thêm vào giỏ hàng', 'error');
+                }
+            } catch (error) {
+                console.error('Add to cart error:', error);
+                showToast('Lỗi kết nối. Vui lòng thử lại.', 'error');
+            }
+        }
+
+        // Format price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN').format(price);
+        }
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg text-white ${
+                type === 'error' ? 'bg-red-500' : 
+                type === 'success' ? 'bg-green-500' : 'bg-blue-500'
+            }`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Sign out function
+        function signOut() {
+            localStorage.removeItem('authToken');
+            sessionStorage.removeItem('authToken');
+            window.location.href = 'dangnhap.html';
+        }
+    </script>
+</body>
+</html>
