@@ -1,5 +1,10 @@
-// Load environment variables
-require('dotenv').config();
+window.process = {
+    env: {
+        NODE_ENV: 'development',
+        API_BASE_URL: 'http://localhost:8080/ecommerce/api',
+        API_BASE_URL_URL: 'http://localhost:8080/ecommerce/api/admin'
+    }
+};
 
 // API base URL configuration
 const API_BASE_URL = process.env.API_BASE_URL || 'localhost:8080';

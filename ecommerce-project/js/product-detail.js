@@ -1,82 +1,22 @@
-// Import products from product.js
-const products = [
-    {
-        id: 1,
-        name: 'Steinway & Sons Model D Concert Grand Piano',
-        price: 175000.00,
-        image: 'https://images.pexels.com/photos/164743/pexels-photo-164743.jpeg',
-        description: 'The pinnacle of concert grand pianos, featuring rich tone and unparalleled craftsmanship. Perfect for concert halls and professional pianists.',
-        stock: 2
-    },
-    {
-        id: 2,
-        name: 'Yamaha U3 Professional Upright Piano',
-        price: 12999.99,
-        image: 'https://images.pexels.com/photos/159420/piano-instrument-music-keys-159420.jpeg',
-        description: 'Professional-grade upright piano with exceptional sound quality and reliable performance. Ideal for serious musicians and music schools.',
-        stock: 5
-    },
-    {
-        id: 3,
-        name: 'Roland RD-88 Digital Stage Piano',
-        price: 1299.99,
-        image: 'https://images.pexels.com/photos/1246437/pexels-photo-1246437.jpeg',
-        description: 'Premium digital piano with weighted keys and authentic grand piano sound. Perfect for performers and home studios.',
-        stock: 10
-    },
-    {
-        id: 4,
-        name: 'Bösendorfer 200CS Grand Piano',
-        price: 98500.00,
-        image: 'https://images.pexels.com/photos/45243/grand-piano-piano-music-instrument-45243.jpeg',
-        description: 'Handcrafted in Vienna, featuring the distinctive Bösendorfer sound with rich bass and singing treble.',
-        stock: 1
-    },
-    {
-        id: 5,
-        name: 'Kawai K-500 Professional Upright Piano',
-        price: 15999.99,
-        image: 'https://images.pexels.com/photos/1021142/pexels-photo-1021142.jpeg',
-        description: 'Professional upright piano with superior touch and tone. Features Kawai\'s renowned build quality and reliability.',
-        stock: 3
-    },
-    {
-        id: 6,
-        name: 'Nord Piano 5 Digital Piano',
-        price: 3499.99,
-        image: 'https://images.pexels.com/photos/164935/pexels-photo-164935.jpeg',
-        description: 'High-end digital piano with premium piano samples and advanced features. Perfect for professional musicians and studios.',
-        stock: 7
-    }
-];
-
 // Get product ID from URL
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get('id');
+let products = {};
 
 // Product detail functions
 const ProductDetail = {
-    loadProduct() {
-        const product = products.find(p => p.id === parseInt(productId));
-        if (!product) {
-            console.error('Product not found');
-            return null;
-        }
-        return product;
-    },
-
-    loadRelatedProducts() {
-        // Get all products except the current one
-        return products.filter(p => p.id !== parseInt(productId)).slice(0, 4);
-    },
+    // loadRelatedProducts() {
+    //     // Get all products except the current one
+    //     return products.filter(p => p.id !== parseInt(productId)).slice(0, 4);
+    // },
 
     updateUI(product) {
         // Update page title
         document.title = `${product.name} - Shop`;
-        
+
         // Update breadcrumb
         document.getElementById('productName').textContent = product.name;
-        
+
         // Update product details
         document.getElementById('productTitle').textContent = product.name;
         document.getElementById('productPrice').textContent = `${product.price.toLocaleString('vi-VN')}₫`;
@@ -84,7 +24,7 @@ const ProductDetail = {
         document.getElementById('stockStatus').className = `font-medium ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`;
         document.getElementById('productDescription').textContent = product.description;
         document.getElementById('additionalInfo').textContent = product.additionalInfo || 'Không có thông tin thêm';
-        
+
         // Update main image
         const mainImage = document.getElementById('mainImage');
         mainImage.src = product.imageUrl || 'https://via.placeholder.com/600';
@@ -123,7 +63,7 @@ const ProductDetail = {
         container.innerHTML = products.map(product => `
             <div class="group relative">
                 <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75">
-                    <img src="${product.imageUrl || 'https://via.placeholder.com/300'}" 
+                    <img src="${product.imageUrl}" 
                          alt="${product.name}"
                          class="w-full h-full object-center object-cover">
                 </div>
@@ -155,7 +95,7 @@ function updateQuantity(change) {
 async function addToCart() {
     try {
         const quantity = parseInt(document.getElementById('quantity').value);
-        
+
         const response = await apiRequest(`${API_BASE_URL}/cart/add`, {
             method: 'POST',
             body: JSON.stringify({
@@ -206,40 +146,60 @@ async function updateCartCount() {
 function showToast(message, type = 'info') {
     const toast = document.getElementById('toast');
     toast.className = `fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg text-white ${
-        type === 'error' ? 'bg-red-500' : 
-        type === 'success' ? 'bg-green-500' : 'bg-blue-500'
+        type === 'error' ? 'bg-red-500' :
+            type === 'success' ? 'bg-green-500' : 'bg-blue-500'
     }`;
     toast.textContent = message;
     toast.classList.remove('translate-x-full');
-    
+
     setTimeout(() => {
         toast.classList.add('translate-x-full');
     }, 3000);
 }
 
 // Initialize page
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     if (!productId) {
         window.location.href = 'products.html';
         return;
     }
 
-    const product = ProductDetail.loadProduct();
-    if (!product) {
-        window.location.href = 'products.html';
-        return;
-    }
+    try {
+        products = await loadProductDetails();
 
-    ProductDetail.updateUI(product);
-    
-    const relatedProducts = ProductDetail.loadRelatedProducts();
-    ProductDetail.renderRelatedProducts(relatedProducts);
-    
-    // Initialize cart count from localStorage
-    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-    const cartCountElement = document.getElementById('cartCount');
-    if (cartCountElement) {
-        cartCountElement.textContent = cartCount;
+        if (!products) {
+            window.location.href = 'products.html';
+            return;
+        }
+
+        ProductDetail.updateUI(products);
+
+        // const relatedProducts = ProductDetail.loadRelatedProducts();
+        // ProductDetail.renderRelatedProducts(relatedProducts);
+
+        // Initialize cart count from localStorage
+        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+        const cartCountElement = document.getElementById('cartCount');
+        if (cartCountElement) {
+            cartCountElement.textContent = cartCount;
+        }
+    } catch (error) {
+        console.error('Error initializing product page:', error);
+        showToast('Có lỗi xảy ra khi tải trang', 'error');
+        window.location.href = 'products.html';
     }
 });
+
+// Load product details
+async function loadProductDetails() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/products/${productId}`);
+        if (!response.ok) throw new Error('Failed to fetch product details');
+        return await response.json();
+    } catch (error) {
+        console.error('Error loading product:', error);
+        showToast('Không thể tải thông tin sản phẩm', 'error');
+        return null;
+    }
+}

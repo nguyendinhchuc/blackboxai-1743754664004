@@ -1,48 +1,3 @@
-// Sample product data (in a real app, this would come from an API)
-const products = [
-    {
-        id: 1,
-        name: 'Steinway & Sons Model D Concert Grand Piano',
-        price: 175000.00,
-        image: 'https://images.pexels.com/photos/164743/pexels-photo-164743.jpeg',
-        description: 'The pinnacle of concert grand pianos, featuring rich tone and unparalleled craftsmanship. Perfect for concert halls and professional pianists.'
-    },
-    {
-        id: 2,
-        name: 'Yamaha U3 Professional Upright Piano',
-        price: 12999.99,
-        image: 'https://images.pexels.com/photos/159420/piano-instrument-music-keys-159420.jpeg',
-        description: 'Professional-grade upright piano with exceptional sound quality and reliable performance. Ideal for serious musicians and music schools.'
-    },
-    {
-        id: 3,
-        name: 'Roland RD-88 Digital Stage Piano',
-        price: 1299.99,
-        image: 'https://images.pexels.com/photos/1246437/pexels-photo-1246437.jpeg',
-        description: 'Premium digital piano with weighted keys and authentic grand piano sound. Perfect for performers and home studios.'
-    },
-    {
-        id: 4,
-        name: 'Bösendorfer 200CS Grand Piano',
-        price: 98500.00,
-        image: 'https://images.pexels.com/photos/45243/grand-piano-piano-music-instrument-45243.jpeg',
-        description: 'Handcrafted in Vienna, featuring the distinctive Bösendorfer sound with rich bass and singing treble.'
-    },
-    {
-        id: 5,
-        name: 'Kawai K-500 Professional Upright Piano',
-        price: 15999.99,
-        image: 'https://images.pexels.com/photos/1021142/pexels-photo-1021142.jpeg',
-        description: 'Professional upright piano with superior touch and tone. Features Kawai\'s renowned build quality and reliability.'
-    },
-    {
-        id: 6,
-        name: 'Nord Piano 5 Digital Piano',
-        price: 3499.99,
-        image: 'https://images.pexels.com/photos/164935/pexels-photo-164935.jpeg',
-        description: 'High-end digital piano with premium piano samples and advanced features. Perfect for professional musicians and studios.'
-    }
-];
 
 // Cart functionality
 class Cart {
@@ -51,7 +6,7 @@ class Cart {
         this.updateCartCount();
     }
 
-    addItem(productId) {
+    addItem(productId, products) {
         const product = products.find(p => p.id === productId);
         if (product) {
             const existingItem = this.items.find(item => item.id === productId);
@@ -62,7 +17,7 @@ class Cart {
             }
             this.saveCart();
             this.updateCartCount();
-            this.showNotification('Product added to cart!');
+            this.showNotification('Đã thêm sản phẩm vào giỏ hàng!');
         }
     }
 
@@ -85,15 +40,10 @@ class Cart {
     }
 
     showNotification(message) {
-        // Create notification element
         const notification = document.createElement('div');
-        notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-500 translate-y-0 opacity-100';
+        notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-500 translate-y-0 opacity-100 z-50';
         notification.textContent = message;
-
-        // Add to document
         document.body.appendChild(notification);
-
-        // Remove after 3 seconds
         setTimeout(() => {
             notification.classList.add('translate-y-[-1rem]', 'opacity-0');
             setTimeout(() => notification.remove(), 500);
@@ -104,27 +54,32 @@ class Cart {
 // Initialize cart
 const cart = new Cart();
 
-// Render products
-document.addEventListener('DOMContentLoaded', function() {
+// Function to render products
+const renderProducts = (products) => {
     const container = document.getElementById('products');
     if (!container) return;
+
+    container.innerHTML = ''; // Clear existing content
 
     products.forEach(product => {
         const productEl = document.createElement('div');
         productEl.className = 'bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:transform hover:scale-105';
         productEl.innerHTML = `
             <div class="cursor-pointer" onclick="window.location.href='product-detail.html?id=${product.id}'">
-                <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover">
+                <img src="${product.image || 'https://images.pexels.com/photos/210020/pexels-photo-210020.jpeg'}" 
+                     alt="${product.name}" 
+                     class="w-full h-48 object-cover hover:opacity-90 transition-opacity duration-300"
+                     onerror="this.src='https://images.pexels.com/photos/210020/pexels-photo-210020.jpeg'">
                 <div class="p-4">
-                    <h3 class="text-lg font-semibold text-gray-900">${product.name}</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-300">${product.name}</h3>
                     <p class="text-gray-600 mt-2">${product.description}</p>
                     <div class="mt-4 flex items-center justify-between">
-                        <span class="text-xl font-bold text-blue-600">$${product.price.toFixed(2)}</span>
+                        <span class="text-xl font-bold text-blue-600">${product.price.toLocaleString('vi-VN')} đ</span>
                         <button 
-                            onclick="event.stopPropagation(); cart.addItem(${product.id})"
-                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300"
+                            onclick="event.stopPropagation(); cart.addItem(${product.id}, ${JSON.stringify(products).replace(/"/g, '"')})"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300 transform hover:scale-105"
                         >
-                            Add to Cart
+                            Thêm vào giỏ
                         </button>
                     </div>
                 </div>
@@ -132,4 +87,67 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         container.appendChild(productEl);
     });
+};
+
+// Function to show loading spinner
+const showLoading = () => {
+    const container = document.getElementById('products');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="flex justify-center items-center w-full py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+    `;
+};
+
+// Function to show error message with retry button
+const showError = (message, retryCallback) => {
+    const container = document.getElementById('products');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" role="alert">
+            <div class="flex flex-col items-center">
+                <strong class="font-bold mb-2">Lỗi!</strong>
+                <span class="block sm:inline mb-4">${message}</span>
+                <button 
+                    onclick="${retryCallback}"
+                    class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-300"
+                >
+                    Thử lại
+                </button>
+            </div>
+        </div>
+    `;
+};
+// Function to load all products (for products.html)
+const loadAllProducts = async () => {
+    showLoading();
+     fetch(`${API_BASE_URL}/products/search`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            'Content-Type': 'application/json' // Thêm Content-Type nếu cần
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            renderProducts(data);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+};
+
+// Initialize products when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Check which page we're on
+    const isProductsPage = window.location.pathname.includes('products.html');
+    loadAllProducts();
 });
