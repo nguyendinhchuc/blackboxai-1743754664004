@@ -16,13 +16,31 @@
                 fetch('sidebar.html')
                     .then(response => response.text())
                     .then(data => {
-                        document.getElementById('sidebar').innerHTML = data;
+                        const sidebarElement = document.getElementById('sidebar');
+                        sidebarElement.innerHTML = data;
+
+                        // Tìm và chèn các script từ sidebar.html
+                        const scripts = sidebarElement.querySelectorAll('script');
+                        scripts.forEach(script => {
+                            const newScript = document.createElement('script');
+                            if (script.src) {
+                                newScript.src = script.src; // Dành cho script có src
+                            } else {
+                                newScript.textContent = script.textContent; // Dành cho script inline
+                            }
+                            document.body.appendChild(newScript); // Thêm script vào DOM
+                        });
+
+                        // Nếu bạn cần khởi tạo thủ công
+                        if (typeof initializeSidebar === 'function') {
+                            initializeSidebar();
+                        }
                     });
             </script>
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 p-8">
+        <div class="flex-1 p-8 main-content">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-2xl font-bold">Quản Lý Người Dùng</h2>
                 <div class="flex items-center space-x-4">
@@ -108,89 +126,7 @@
         </div>
     </div>
 
-    <script src="../js/auth.js"></script>
-    <script src="js/admin.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Load users
-            const users = await loadUsers();
-            renderUsers(users);
-
-            // Search event listener
-            document.getElementById('userSearch').addEventListener('input', async (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                const users = await loadUsers();
-                const filteredUsers = users.filter(user => 
-                    user.name.toLowerCase().includes(searchTerm) || 
-                    user.email.toLowerCase().includes(searchTerm)
-                );
-                renderUsers(filteredUsers);
-            });
-
-            // Modal event listeners
-            document.getElementById('closeUserModalBtn').addEventListener('click', () => {
-                document.getElementById('userModal').classList.add('hidden');
-            });
-
-            document.getElementById('cancelUserBtn').addEventListener('click', () => {
-                document.getElementById('userModal').classList.add('hidden');
-            });
-        });
-
-        function renderUsers(users) {
-            const tableBody = document.getElementById('userTableBody');
-            tableBody.innerHTML = users.map(user => `
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">${user.id}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${user.name}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${user.email}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
-                        }">
-                            ${user.role === 'admin' ? 'Quản Trị Viên' : 'Người Dùng'}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            user.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }">
-                            ${user.status === 'active' ? 'Hoạt Động' : 'Tạm Khóa'}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <button class="text-indigo-600 hover:text-indigo-900 mr-3" onclick="editUser(${user.id})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="text-red-600 hover:text-red-900" onclick="deleteUser(${user.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        async function editUser(userId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    }
-                });
-                const user = await response.json();
-
-                if (response.ok) {
-                    document.getElementById('userId').value = user.id;
-                    document.getElementById('userName').value = user.name;
-                    document.getElementById('userEmail').value = user.email;
-                    document.getElementById('userRole').value = user.role;
-                    document.getElementById('userStatus').value = user.status;
-                    document.getElementById('userModal').classList.remove('hidden');
-                }
-            } catch (error) {
-                console.error('Lỗi khi tải thông tin người dùng:', error);
-            }
-        }
-    </script>
+    <script src="js/shared.js"></script>
+    <script src="js/users/users.js"></script>
 </body>
 </html>

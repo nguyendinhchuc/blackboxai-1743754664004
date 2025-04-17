@@ -1,37 +1,145 @@
-<div class="w-64 bg-indigo-800 text-white p-4">
-    <h1 class="text-2xl font-bold mb-8">Quản Trị</h1>
-    <nav>
+<script src="../js/auth.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="js/admin.js"></script>
+<div id="sidebar-container" class="bg-indigo-800 text-white h-full transition-all duration-300 ease-in-out relative">
+    <div class="flex items-center justify-between p-4">
+        <h1 class="text-2xl font-bold sidebar-text">Quản Trị</h1>
+        <button id="sidebar-toggle" class="lg:hidden text-white focus:outline-none hover:bg-indigo-700 p-2 rounded">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+    </div>
+    <!-- Desktop toggle button container -->
+    <div class="hidden lg:block absolute -right-5 top-20 z-10">
+        <button id="desktop-toggle" class="bg-indigo-800 text-white p-3 rounded-full shadow-xl hover:bg-indigo-700 focus:outline-none transition-all duration-300 hover:shadow-2xl">
+            <i class="fas fa-chevron-left text-lg transition-transform duration-300"></i>
+        </button>
+    </div>
+    <nav class="p-4">
         <ul class="space-y-2">
             <li>
                 <a href="index.html" class="flex items-center p-2 rounded hover:bg-indigo-700">
-                    <i class="fas fa-tachometer-alt mr-3"></i>
-                    Tổng Quan
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="sidebar-text ml-3">Tổng Quan</span>
                 </a>
             </li>
             <li>
                 <a href="products.html" class="flex items-center p-2 rounded hover:bg-indigo-700">
-                    <i class="fas fa-boxes mr-3"></i>
-                    Sản Phẩm
+                    <i class="fas fa-boxes"></i>
+                    <span class="sidebar-text ml-3">Sản Phẩm</span>
                 </a>
             </li>
             <li>
                 <a href="orders.html" class="flex items-center p-2 rounded hover:bg-indigo-700">
-                    <i class="fas fa-shopping-cart mr-3"></i>
-                    Đơn Hàng
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="sidebar-text ml-3">Đơn Hàng</span>
                 </a>
             </li>
             <li>
                 <a href="users.html" class="flex items-center p-2 rounded hover:bg-indigo-700">
-                    <i class="fas fa-users mr-3"></i>
-                    Người Dùng
+                    <i class="fas fa-users"></i>
+                    <span class="sidebar-text ml-3">Người Dùng</span>
                 </a>
             </li>
             <li>
                 <a href="settings.html" class="flex items-center p-2 rounded hover:bg-indigo-700">
-                    <i class="fas fa-cog mr-3"></i>
-                    Cài Đặt
+                    <i class="fas fa-cog"></i>
+                    <span class="sidebar-text ml-3">Cài Đặt</span>
                 </a>
             </li>
         </ul>
     </nav>
 </div>
+
+<style>
+#sidebar-container {
+    width: 256px; /* w-64 equivalent */
+    box-shadow: 4px 0 6px -1px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transition: all 0.3s ease-in-out;
+    z-index: 50;
+}
+
+#sidebar-container.collapsed {
+    width: 72px; /* w-18 equivalent */
+}
+
+#sidebar-container.collapsed .sidebar-text {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.sidebar-text {
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+    white-space: nowrap;
+}
+
+/* Add styles for icons to ensure they stay centered when collapsed */
+#sidebar-container a {
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+}
+
+#sidebar-container.collapsed a {
+    justify-content: center;
+    padding: 0.5rem;
+}
+
+#sidebar-container.collapsed i {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+#sidebar-container.collapsed #desktop-toggle i {
+    transform: rotate(180deg);
+}
+
+#desktop-toggle:hover {
+    transform: translateX(2px) scale(1.1);
+}
+
+/* Ensure main content adjusts with sidebar */
+ .main-content {
+    transition: all 0.3s ease-in-out;
+    margin-left: 100px; /* Same as sidebar width */
+}
+
+#sidebar-container.collapsed ~ .main-content {
+    margin-left: 72px; /* Same as collapsed sidebar width */
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        margin-left: 0 !important;
+    }
+    
+    #sidebar-container.collapsed ~ .main-content {
+        margin-left: 0;
+    }
+
+    #sidebar-container {
+        transform: translateX(0);
+        width: 256px;
+    }
+    
+    #sidebar-container.collapsed {
+        transform: translateX(-100%);
+    }
+    
+    #sidebar-container.collapsed .sidebar-text {
+        display: inline;
+        opacity: 1;
+    }
+}
+
+/* Hover effect for navigation items */
+.hover\:bg-indigo-700:hover {
+    background-color: rgba(67, 56, 202, 0.7);
+    transition: background-color 0.2s ease-in-out;
+}
+</style>

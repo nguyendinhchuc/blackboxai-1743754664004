@@ -77,9 +77,13 @@ function showToast(message, type = 'info') {
 
 // Check authentication status on page load
 document.addEventListener('DOMContentLoaded', () => {
+    // Skip auth check for development
+    if (window.location.hostname === 'localhost') {
+        return;
+    }
+    
     const authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     if (!authToken) {
-        // If user already has a session, redirect directly to admin page
-        window.location.href = 'dangnhap.html';
+        window.location.href = '/ecommerce-project/dangnhap.html';
     }
 });

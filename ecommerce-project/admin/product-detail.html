@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Sản Phẩm - Quản Trị</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="js/shared.js"></script>
+</head>
+<body class="bg-gray-100">
+<!-- Sidebar -->
+<aside id="sidebar" class="z-20">
+    <!-- Include Sidebar -->
+    <script>
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                const sidebarElement = document.getElementById('sidebar');
+                sidebarElement.innerHTML = data;
+
+                // Tìm và chèn các script từ sidebar.html
+                const scripts = sidebarElement.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src; // Dành cho script có src
+                    } else {
+                        newScript.textContent = script.textContent; // Dành cho script inline
+                    }
+                    document.body.appendChild(newScript); // Thêm script vào DOM
+                });
+
+                // Nếu bạn cần khởi tạo thủ công
+                if (typeof initializeSidebar === 'function') {
+                    initializeSidebar();
+                }
+            });
+    </script>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 p-8 overflow-auto transition-all duration-300 min-h-screen main-content">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-gray-600">
+        <ol class="list-none p-0 inline-flex items-center space-x-2">
+            <li class="flex items-center">
+                <a href="products.html" class="hover:text-blue-600">Sản Phẩm</a>
+                <i class="fas fa-chevron-right text-xs mx-2"></i>
+            </li>
+        </ol>
+    </nav>
+
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">Chi Tiết Sản Phẩm</h1>
+            <div class="flex space-x-3">
+                <button id="saveButton" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200 flex items-center">
+                    <i class="fas fa-save mr-2"></i>Lưu Thay Đổi
+                </button>
+                <a href="products.html" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors duration-200 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i>Quay Lại
+                </a>
+            </div>
+        </div>
+
+        <form id="productForm" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Product Image -->
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700">Hình Ảnh Sản Phẩm</label>
+                    <div class="flex flex-col items-center space-y-4">
+                        <img id="productImage" src="images/default-avatar.png" alt="Product"
+                             class="w-full h-64 object-cover rounded-lg border">
+                        <input type="file" id="imageInput" accept="image/*" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="space-y-4">
+                    <div>
+                        <label for="productName" class="block text-sm font-medium text-gray-700">Tên Sản Phẩm</label>
+                        <input type="text" id="productName" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="productPrice" class="block text-sm font-medium text-gray-700">Giá (VNĐ)</label>
+                        <input type="number" id="productPrice" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="productStock" class="block text-sm font-medium text-gray-700">Số Lượng Tồn Kho</label>
+                        <input type="number" id="productStock" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="productCategory" class="block text-sm font-medium text-gray-700">Danh Mục</label>
+                        <select id="productCategory" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="electronics">Điện tử</option>
+                            <option value="clothing">Thời trang</option>
+                            <option value="books">Sách</option>
+                            <option value="accessories">Phụ kiện</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Description -->
+            <div>
+                <label for="productDescription" class="block text-sm font-medium text-gray-700">Mô Tả Sản Phẩm</label>
+                <textarea id="productDescription" rows="4" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+            </div>
+
+            <!-- Additional Details -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="productSKU" class="block text-sm font-medium text-gray-700">Mã SKU</label>
+                    <input type="text" id="productSKU" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="productStatus" class="block text-sm font-medium text-gray-700">Trạng Thái</label>
+                    <select id="productStatus" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="active">Đang bán</option>
+                        <option value="outOfStock">Hết hàng</option>
+                        <option value="discontinued">Ngừng kinh doanh</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <!-- Delete Button -->
+        <div class="mt-8 border-t pt-6">
+            <button id="deleteButton" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors duration-200 flex items-center">
+                <i class="fas fa-trash-alt mr-2"></i>Xóa Sản Phẩm
+            </button>
+        </div>
+    </div>
+</main>
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed bottom-4 right-4 px-4 py-2 rounded-lg text-white transform transition-transform duration-300 translate-y-full"></div>
+<script src="js/products/product-detail.js"></script>
+</body>
+</html>

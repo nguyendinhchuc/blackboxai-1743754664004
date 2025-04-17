@@ -2,8 +2,8 @@
 window.process = {
     env: {
         NODE_ENV: 'development',
-        API_BASE_URL: 'https://ecommece-af2a0921deff.herokuapp.com/ecommerce/api',
-        API_BASE_URL_URL: 'https://ecommece-af2a0921deff.herokuapp.com/ecommerce/api/admin'
+        API_BASE_URL: 'http://localhost:8080/ecommerce/api',
+        API_BASE_URL_URL: 'http://localhost:8080/ecommerce/api/admin'
     }
 };
 
@@ -29,4 +29,5 @@ const AdminUtils = {
 };
 
 // Admin API Base URL (will be set in HTML file)
-window.API_BASE_URL = window.API_BASE_URL || 'http://localhost:8080/api/admin';
+window.API_BASE_URL = window.process.env.API_BASE_URL;
+const  API_BASE_URL = window.process.env.API_BASE_URL;

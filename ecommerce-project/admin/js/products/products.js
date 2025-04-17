@@ -1,7 +1,7 @@
 // Product Management Functions
 const ProductManager = {
     async loadProducts() {
-        await fetch(`${AUTH_API_URL}/products/search`, {
+        await fetch(`${API_BASE_URL}/products/search`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -26,7 +26,7 @@ const ProductManager = {
             const formData = new FormData();
             formData.append('image', file);
 
-            const response = await fetch(`${AUTH_API_URL}/products/${productId}/upload-image`, {
+            const response = await fetch(`${API_BASE_URL}/products/${productId}/upload-image`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -45,7 +45,7 @@ const ProductManager = {
 
     async saveProduct(product) {
         try {
-            const response = await fetch(`${AUTH_API_URL}/products/save`, {
+            const response = await fetch(`${API_BASE_URL}/products/save`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const ProductManager = {
 
     async deleteProduct(productId) {
         try {
-            await fetch(`${AUTH_API_URL}/products/${productId}`, {
+            await fetch(`${API_BASE_URL}/products/${productId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -182,7 +182,6 @@ function showToast(message, type = 'info') {
 
 // Render products in table
 function renderProducts(products) {
-    debugger
     const tableBody = document.getElementById('productTableBody');
     if (!tableBody) return;
 
@@ -190,11 +189,11 @@ function renderProducts(products) {
         <tr>
             <td class="px-6 py-4 whitespace-nowrap">${product.id}</td>
             <td class="px-6 py-4 whitespace-nowrap">
-                <img src="${product.imageUrl || 'https://via.placeholder.com/50'}" alt="${product.name}" 
+                <img src="${product.imageUrl || 'images/default-avatar.png'}" alt="${product.name}"
                     class="h-10 w-10 rounded-full object-cover">
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-                <a href="../product-detail.html?id=${product.id}" class="text-indigo-600 hover:text-indigo-900">
+                <a href="product-detail.html?id=${product.id}" class="text-indigo-600 hover:text-indigo-900">
                     ${product.name}
                 </a>
             </td>
@@ -222,7 +221,7 @@ function renderProducts(products) {
 // Edit product function
 async function editProduct(productId) {
     try {
-        const response = await fetch(`${AUTH_API_URL}/products/${productId}`, {
+        const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             }
@@ -235,7 +234,7 @@ async function editProduct(productId) {
         document.getElementById('productPrice').value = product.price;
         document.getElementById('productStock').value = product.stockQuantity;
         document.getElementById('productDescription').value = product.description;
-        document.getElementById('imagePreview').src = product.imageUrl || 'https://via.placeholder.com/100';
+        document.getElementById('imagePreview').src = product.imageUrl || 'images/default-avatar.png';
 
         // Update modal title and show
         document.getElementById('modalTitle').textContent = 'Chỉnh Sửa Sản Phẩm';

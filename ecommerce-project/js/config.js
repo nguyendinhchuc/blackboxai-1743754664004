@@ -1,6 +1,6 @@
 // Load environment variables
 const config = {
-    API_BASE_URL: 'https://ecommece-af2a0921deff.herokuapp.com/ecommerce/api',  // This will be proxied through our Express server
+    API_BASE_URL: 'http://localhost:8080/ecommerce/api',  // This will be proxied through our Express server
     FRONTEND_URL: 'http://localhost:8000',
     NODE_ENV: 'development'
 };

@@ -16,13 +16,31 @@
                 fetch('sidebar.html')
                     .then(response => response.text())
                     .then(data => {
-                        document.getElementById('sidebar').innerHTML = data;
+                        const sidebarElement = document.getElementById('sidebar');
+                        sidebarElement.innerHTML = data;
+
+                        // Tìm và chèn các script từ sidebar.html
+                        const scripts = sidebarElement.querySelectorAll('script');
+                        scripts.forEach(script => {
+                            const newScript = document.createElement('script');
+                            if (script.src) {
+                                newScript.src = script.src; // Dành cho script có src
+                            } else {
+                                newScript.textContent = script.textContent; // Dành cho script inline
+                            }
+                            document.body.appendChild(newScript); // Thêm script vào DOM
+                        });
+
+                        // Nếu bạn cần khởi tạo thủ công
+                        if (typeof initializeSidebar === 'function') {
+                            initializeSidebar();
+                        }
                     });
             </script>
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 p-8">
+        <div class="flex-1 p-8 main-content">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-2xl font-bold">Quản Lý Đơn Hàng</h2>
                 <div class="flex items-center space-x-4">
@@ -71,9 +89,8 @@
             </div>
         </div>
     </div>
-
-    <script src="../js/auth.js"></script>
-    <script src="js/admin.js"></script>
+    <script src="js/shared.js"></script>
+    <script src="js/sidebar.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             // Load orders
